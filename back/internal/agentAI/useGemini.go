@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	Gemini "github.com/google/generative-ai-go/genai"
 
@@ -16,7 +17,7 @@ const geminiKEY string = "AIzaSyCbtBOlwU1yI7BYxkanm2SPjYykkgh4xnQ"
 var (
 	ctx    = context.Background()
 	client = InitGemini(geminiKEY)
-	model  = client.GenerativeModel("gemini-1.5-flash")
+	model  = client.GenerativeModel("gemini-2.0-flash-lite") // muito rápido
 )
 
 func InitGemini(Key string) *Gemini.Client {
@@ -29,15 +30,23 @@ func InitGemini(Key string) *Gemini.Client {
 
 func GeneratePhrase() (models.ModelPhrase, error) {
 	command := `
-	Generate one content in the following JSON model, without using code blocks or backticks:
+		Task: Generate a single JSON object representing a phrase.
 
-	Phrase{
-		Portuguese: string,
-		English: string, // without 
-		omittedWord: [string, string] // of Phrase.English
-	}
+		Requirements:
+		- Return only the JSON object (no code blocks, no explanations).
+		- Generate a new, original, and well-structured sentence using vocabulary from the 1000 most common English words.
+		- Avoid reusing sentences or structures from previous responses.
+		- The sentence must be unique, meaningful, and clearly different on each request.
+		- Use any verb in any tense, prioritizing variety and natural expression.
+		- Add an "omittedWord" field with two random words from the "English" sentence
+		- The Phrase Portuguese must to correspond the Phrase English
 
-	Return only the JSON, with no explanation and no formatting markers.
+		Format:
+		{
+			"Portuguese": string, // The sentence must not end with a period
+			"English": string, // The sentence must not end with a period
+			"omittedWord": ["string", "string"] // random words of field "English"
+		}
 	`
 	prompt := Gemini.Text(
 		command,
@@ -49,9 +58,12 @@ func GeneratePhrase() (models.ModelPhrase, error) {
 	}
 
 	var dataJSON = fmt.Sprintf("%s", response.Candidates[0].Content.Parts[0])
+	cleanJSON := strings.ReplaceAll(dataJSON, "`", "")
+	cleanJSON = strings.ReplaceAll(cleanJSON, "json", "")
+	// fmt.Print(cleanJSON)
 
 	var data models.ModelPhrase
-	if err := json.Unmarshal([]byte(dataJSON), &data); err != nil {
+	if err := json.Unmarshal([]byte(cleanJSON), &data); err != nil {
 		fmt.Println("Error json.Unmarshal", err)
 		return models.ModelPhrase{}, err
 	}
@@ -61,17 +73,21 @@ func GeneratePhrase() (models.ModelPhrase, error) {
 
 func UseDictionary(word string) (models.DictionaryEntry, error) {
 	command := `
-		Generate one content in the following JSON model of word ´%s´, without using code blocks or backticks:
+		Task: Generate a single JSON object for the word "%s".
 
-		DictionaryEntry {
-			word: string, // the input word
-			partOfSpeech: string, // grammatical category of the word
-			definition: string, // definition in English
-			translation: string, // translation to Portuguese
-			synonyms: [string, string, string] // three related words in English
+		Requirements:
+		- Do not include code blocks, backticks, or explanations.
+		- Return only the JSON object.
+		- Generate the phrase without a period at the end.
+
+		Format:
+		{
+			"word": string,
+			"partOfSpeech": string, // If it's a verb, specify the verb tense. modelo: verb - [verb tense]
+			"definition": string,
+			"translation": string, // Translation in Portuguese (pt-br)
+			"synonyms": ["string", "string", "string"]
 		}
-
-		Return only the JSON, with no explanation and no formatting markers. Use the word I provide as input.
 	`
 	prompt := Gemini.Text(
 		fmt.Sprintf(command, word),
@@ -83,9 +99,12 @@ func UseDictionary(word string) (models.DictionaryEntry, error) {
 	}
 
 	var dataJSON = fmt.Sprintf("%s", response.Candidates[0].Content.Parts[0])
+	cleanJSON := strings.ReplaceAll(dataJSON, "`", "")
+	cleanJSON = strings.ReplaceAll(cleanJSON, "json", "")
+	// fmt.Print(cleanJSON)
 
 	var data models.DictionaryEntry
-	if err := json.Unmarshal([]byte(dataJSON), &data); err != nil {
+	if err := json.Unmarshal([]byte(cleanJSON), &data); err != nil {
 		fmt.Println("Error json.Unmarshal", err)
 		return models.DictionaryEntry{}, err
 	}
