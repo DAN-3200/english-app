@@ -1,0 +1,23 @@
+export function Phrase(text: string) {
+  const words = text.trim().split(/\s+/);
+
+  return (
+    <>
+      {words.flatMap((word, wi) => {
+        const letters = Array.from(word).map((ch, li) => (
+          <Letter key={`L-${wi}-${li}`} value={ch} index={li} />
+        ));
+
+        const blocks = [
+          <Word key={`W-${wi}`} value={letters} wordString={word} />
+        ];
+
+        if (wi < words.length - 1) {
+          blocks.push(<Space key={`S-${wi}`} index={wi} />);
+        }
+
+        return blocks;
+      })}
+    </>
+  );
+}

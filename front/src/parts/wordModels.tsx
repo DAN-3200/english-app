@@ -1,15 +1,9 @@
-import { useAtom } from "jotai";
-import { ctxType } from "../share/context/ctxMain";
-import { JSX } from "react";
-import { DictionaryEntry } from "../share/types/types";
-import { inAnyRange } from "../share/utils/logic";
-import clsx from "clsx";
-
-
-const HiddenWords = [];
-// HiddenWords.push(wordPosition("miles", modelPhrase.English));
-// HiddenWords.push(wordPosition("step", modelPhrase.English));
-
+import { useAtom } from 'jotai';
+import { ctxType } from '../share/context/ctxMain';
+import { JSX } from 'react';
+import { DictionaryEntry } from '../share/types/types';
+import { inAnyRange, wordPosition } from '../share/utils/logic';
+import clsx from 'clsx';
 
 export function Phrase(text: string) {
 	let phraseInBlocs: JSX.Element[] = [];
@@ -68,14 +62,14 @@ function Word({
 	const getData = async (word: string) => {
 		let json: DictionaryEntry;
 		try {
-			json = await fetch(`http://localhost:8000/useDictionary/${word}`).then((res) =>
-				res.json()
+			json = await fetch(`http://localhost:8000/useDictionary/${word}`).then(
+				(res) => res.json()
 			);
 		} catch (e) {
 			console.log('Erro de Requisição: ', e);
 			json = {} as DictionaryEntry;
 		}
-		console.log(json)
+		console.log(json);
 		setWordInfo(json);
 	};
 	return (
@@ -90,6 +84,13 @@ function Word({
 function Letter({ value, index }: { value: string; index: number }) {
 	const [text] = useAtom(ctxType.textTyping);
 	const [modelPhrase] = useAtom(ctxType.modelPhrase);
+	const HiddenWords: [number, number][] = [];
+	// HiddenWords.push(
+	// 	wordPosition(modelPhrase.omittedWord[0], modelPhrase.English)
+	// );
+	// HiddenWords.push(
+	// 	wordPosition(modelPhrase.omittedWord[1], modelPhrase.English)
+	// );
 
 	const checkLetter = (index: number) => {
 		let letterMold = modelPhrase.English[index].toLowerCase();
@@ -107,9 +108,7 @@ function Letter({ value, index }: { value: string; index: number }) {
 		}
 	};
 
-	return (
-		<span className={clsx('', checkLetter(index))}>{value}</span>
-	);
+	return <span className={clsx('', checkLetter(index))}>{value}</span>;
 }
 
 function Space({ index }: { index: number }) {
