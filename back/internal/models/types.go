@@ -10,6 +10,6 @@ type DictionaryEntry struct {
 	Word         string   `json:"word"`
 	PartOfSpeech string   `json:"partOfSpeech"`
 	Definition   string   `json:"definition"`
-	Translation  string   `json:"translation"`
+	Example      string   `json:"example"`
 	Synonyms     []string `json:"synonyms"`
 }

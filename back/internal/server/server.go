@@ -24,7 +24,7 @@ func RunServer() {
 			MaxAge:           12 * time.Hour,
 		},
 	))
-
+	agentAI.InitGeminiOnce()
 	// End Points
 	_RoutesApplication(server)
 
