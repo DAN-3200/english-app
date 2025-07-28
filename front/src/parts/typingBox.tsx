@@ -14,7 +14,7 @@ export function TypingBox() {
 		(async () => {
 			let json: ModelPhrase;
 			try {
-				json = await fetch('http://localhost:8000/getPhrase').then((res) =>
+				json = await fetch('http://localhost:3200/getPhrase').then((res) =>
 					res.json()
 				);
 			} catch (e) {
@@ -81,7 +81,7 @@ function NextButton() {
 		console.log('Ativo');
 		let json: ModelPhrase;
 		try {
-			json = await fetch('http://localhost:8000/getPhrase').then((res) =>
+			json = await fetch('http://localhost:3200/getPhrase').then((res) =>
 				res.json()
 			);
 		} catch (e) {

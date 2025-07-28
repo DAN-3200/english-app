@@ -1,15 +1,10 @@
 import { useAtom } from 'jotai';
 import { ctxModal } from '../share/context/ctxMain';
+import * as luc from 'lucide-react';
 
 export function NavBar() {
 	let loc = {
-		Bloc: ({
-			value = '',
-			onClick,
-		}: {
-			value: string;
-			onClick?: () => void;
-		}) => (
+		Bloc: ({ value = '', onClick }: { value: any; onClick?: () => void }) => (
 			<span
 				onClick={onClick}
 				className='cursor-pointer rounded px-2 py-1 font-bold text-gray-300 transition-colors duration-200  hover:underline underline-offset-7 decoration-2'>
@@ -27,7 +22,7 @@ export function NavBar() {
 					value='WordPackage'
 					onClick={() => setModal('PackageWord')}
 				/>
-				<loc.Bloc value='P' />
+				<loc.Bloc value={<luc.User />} />
 			</div>
 		</div>
 	);

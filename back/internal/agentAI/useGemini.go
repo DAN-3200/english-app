@@ -5,24 +5,20 @@ import (
 	"app/pkg/utils"
 	"context"
 	"fmt"
+	"os"
 
 	Gemini "github.com/google/generative-ai-go/genai"
 
 	"google.golang.org/api/option"
 )
 
-const geminiKEY string = "AIzaSyCbtBOlwU1yI7BYxkanm2SPjYykkgh4xnQ"
-
 var (
 	ctx   = context.Background()
 	model *Gemini.GenerativeModel
 )
 
-func InitGeminiOnce() {
-	client, err := Gemini.NewClient(ctx, option.WithAPIKey(geminiKEY))
-	if err != nil {
-		panic(err)
-	}
+func InitGemini() {
+	client, _ := Gemini.NewClient(ctx, option.WithAPIKey(os.Getenv("KEY_GEMINI")))
 	model = client.GenerativeModel("gemini-2.0-flash-lite")
 }
 

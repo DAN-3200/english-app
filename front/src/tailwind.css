@@ -3,21 +3,8 @@
 
 @theme {
    --font-Sansation: "Sansation", sans-serif;
-   --animate-surgir-in: surgir 0.15s normal;
-   --animate-surgir-out: surgir 2s reverse
-
 }
+
 * {
    @apply font-Sansation;
-}
-
-
-@keyframes surgir {
-   from {
-      opacity: 0;
-      transform: translateX(-20px);
-   } to {
-      opacity: 100;
-      transform: translateX(0);
-   }
 }

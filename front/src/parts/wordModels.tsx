@@ -62,7 +62,7 @@ function Word({
 	const getData = async (word: string) => {
 		let json: DictionaryEntry;
 		try {
-			json = await fetch(`http://localhost:8000/useDictionary/${word}`).then(
+			json = await fetch(`http://localhost:3200/useDictionary/${word}`).then(
 				(res) => res.json()
 			);
 		} catch (e) {

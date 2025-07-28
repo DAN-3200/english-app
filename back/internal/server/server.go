@@ -13,7 +13,6 @@ import (
 func RunServer() {
 	var server = gin.Default()
 
-	// CORS config
 	server.Use(cors.New(
 		cors.Config{
 			AllowOrigins:     []string{"*"},
@@ -24,11 +23,10 @@ func RunServer() {
 			MaxAge:           12 * time.Hour,
 		},
 	))
-	agentAI.InitGeminiOnce()
-	// End Points
+	agentAI.InitGemini()
 	_RoutesApplication(server)
 
-	server.Run(":8000")
+	server.Run(":3200")
 }
 
 func _RoutesApplication(server *gin.Engine) {
